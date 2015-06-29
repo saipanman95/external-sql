@@ -1,5 +1,5 @@
 # external-sql
-Utility class for loading external SQL files and returns them a String via class loader resource as stream. This means that packaged jar or war must contain the sql files to be loaded.
+Utility class for loading external SQL files and returns them as a String via class loader "getResourseAsStream". This means that the packaged jar or war must contain the sql files to be loaded.
 
 # How to use:
 
