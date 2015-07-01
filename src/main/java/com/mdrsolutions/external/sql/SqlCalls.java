@@ -14,9 +14,36 @@ public class SqlCalls {
 
     public static final String getSql(String filePath) {
         String sql = "";
+        InputStream is;
         try {
-            InputStream is = SqlCalls.class.getResourceAsStream(filePath);
+
+            is = SqlCalls.class.getResourceAsStream(filePath);
             sql = CharStreams.toString(new InputStreamReader(is));
+            if (null == sql || sql.isEmpty()) {
+                Closeables.closeQuietly(is);
+                throw new IOException("File path to SQL file could not be read!");
+            } else {
+                Closeables.closeQuietly(is);
+                return sql;
+            }
+        } catch (IOException ex) {
+            logger.error("Could not read the sql file specified!", ex);
+        }
+        return sql;
+    }
+
+    public static final String getSql(String filePath, boolean notClassPath) {
+
+        String sql = "";
+        InputStream is;
+
+        if(!notClassPath){
+            return getSql(filePath);
+        }
+        
+        try {
+            File f = new File(filePath);
+            is = new FileInputStream(f);
             if (null == sql || sql.isEmpty()) {
                 Closeables.closeQuietly(is);
                 throw new IOException("File path to SQL file could not be read!");
