@@ -44,6 +44,7 @@ public class SqlCalls {
         try {
             File f = new File(filePath);
             is = new FileInputStream(f);
+            sql = CharStreams.toString(new InputStreamReader(is));
             if (null == sql || sql.isEmpty()) {
                 Closeables.closeQuietly(is);
                 throw new IOException("File path to SQL file could not be read!");

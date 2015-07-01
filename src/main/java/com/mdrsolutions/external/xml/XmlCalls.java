@@ -54,7 +54,9 @@ public class XmlCalls {
         try {
             File f = new File(filePath);
             is = new FileInputStream(f);
+            xml = CharStreams.toString(new InputStreamReader(is));
             if (null == xml || xml.isEmpty()) {
+                
                 Closeables.closeQuietly(is);
                 throw new IOException("File path to SQL file could not be read!");
             } else {
