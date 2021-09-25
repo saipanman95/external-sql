@@ -8,13 +8,14 @@ package com.mdrsolutions.external.xml;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
 import com.mdrsolutions.external.sql.SqlCalls;
-import static com.mdrsolutions.external.sql.SqlCalls.getSql;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -22,27 +23,29 @@ import org.apache.log4j.Logger;
  */
 public class XmlCalls {
 
-    private static final Logger logger = Logger.getLogger(XmlCalls.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(XmlCalls.class);
 
-    public static final String getXml(String filePath) {
+    public static String getXml(String filePath) {
         String xml = "";
         try {
             InputStream is = SqlCalls.class.getResourceAsStream(filePath);
-            xml = CharStreams.toString(new InputStreamReader(is));
-            if (null == xml || xml.isEmpty()) {
-                Closeables.closeQuietly(is);
-                throw new IOException("File path to XML file could not be read!");
-            } else {
-                Closeables.closeQuietly(is);
-                return xml;
+            if (null != is) {
+                xml = CharStreams.toString(new InputStreamReader(is));
+                if (xml.isEmpty()) {
+                    Closeables.closeQuietly(is);
+                    throw new IOException("File path to XML file could not be read!");
+                } else {
+                    Closeables.closeQuietly(is);
+                    return xml;
+                }
             }
         } catch (IOException ex) {
-            logger.error("Could not read the sql file specified!", ex);
+            LOGGER.error("Could not read the sql file specified!", ex);
         }
         return xml;
     }
 
-    public static final String getXml(String filePath, boolean notClassPath) {
+    public static String getXml(String filePath, boolean notClassPath) {
 
         String xml = "";
         InputStream is;
@@ -54,17 +57,19 @@ public class XmlCalls {
         try {
             File f = new File(filePath);
             is = new FileInputStream(f);
-            xml = CharStreams.toString(new InputStreamReader(is));
-            if (null == xml || xml.isEmpty()) {
-                
-                Closeables.closeQuietly(is);
-                throw new IOException("File path to SQL file could not be read!");
-            } else {
-                Closeables.closeQuietly(is);
-                return xml;
+            if(null != is) {
+                xml = CharStreams.toString(new InputStreamReader(is));
+                if (xml.isEmpty()) {
+
+                    Closeables.closeQuietly(is);
+                    throw new IOException("File path to SQL file could not be read!");
+                } else {
+                    Closeables.closeQuietly(is);
+                    return xml;
+                }
             }
         } catch (IOException ex) {
-            logger.error("Could not read the sql file specified!", ex);
+            LOGGER.error("Could not read the sql file specified!", ex);
         }
         return xml;
     }

@@ -2,37 +2,40 @@ package com.mdrsolutions.external.sql;
 
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
-import org.apache.log4j.Logger;
 
 public class SqlCalls {
 
     private SqlCalls() {
     }
 
-    private static final Logger logger = Logger.getLogger(SqlCalls.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SqlCalls.class);
 
-    public static final String getSql(String filePath) {
+    public static String getSql(String filePath) {
         String sql = "";
         InputStream is;
         try {
-
             is = SqlCalls.class.getResourceAsStream(filePath);
-            sql = CharStreams.toString(new InputStreamReader(is));
-            if (null == sql || sql.isEmpty()) {
-                Closeables.closeQuietly(is);
-                throw new IOException("File path to SQL file could not be read!");
-            } else {
-                Closeables.closeQuietly(is);
-                return sql;
+            if ( null != is) {
+                sql = CharStreams.toString(new InputStreamReader(is));
+                if (sql.isEmpty()) {
+                    Closeables.closeQuietly(is);
+                    throw new IOException("File path to SQL file could not be read!");
+                } else {
+                    Closeables.closeQuietly(is);
+                    return sql;
+                }
             }
         } catch (IOException ex) {
-            logger.error("Could not read the sql file specified!", ex);
+            LOGGER.error("Could not read the sql file specified!", ex);
         }
         return sql;
     }
 
-    public static final String getSql(String filePath, boolean notClassPath) {
+    public static String getSql(String filePath, boolean notClassPath) {
 
         String sql = "";
         InputStream is;
@@ -44,16 +47,18 @@ public class SqlCalls {
         try {
             File f = new File(filePath);
             is = new FileInputStream(f);
-            sql = CharStreams.toString(new InputStreamReader(is));
-            if (null == sql || sql.isEmpty()) {
-                Closeables.closeQuietly(is);
-                throw new IOException("File path to SQL file could not be read!");
-            } else {
-                Closeables.closeQuietly(is);
-                return sql;
+            if (null != is) {
+                sql = CharStreams.toString(new InputStreamReader(is));
+                if (null == sql || sql.isEmpty()) {
+                    Closeables.closeQuietly(is);
+                    throw new IOException("File path to SQL file could not be read!");
+                } else {
+                    Closeables.closeQuietly(is);
+                    return sql;
+                }
             }
         } catch (IOException ex) {
-            logger.error("Could not read the sql file specified!", ex);
+            LOGGER.error("Could not read the sql file specified!", ex);
         }
         return sql;
     }
